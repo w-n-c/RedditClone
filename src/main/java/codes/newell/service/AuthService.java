@@ -6,10 +6,12 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import codes.newell.dto.LoginRequest;
 import codes.newell.dto.RegisterRequest;
 import codes.newell.exceptions.SpringRedditException;
 import codes.newell.model.NotificationEmail;
@@ -17,22 +19,17 @@ import codes.newell.model.User;
 import codes.newell.model.VerificationToken;
 import codes.newell.repository.UserRepository;
 import codes.newell.repository.VerificationTokenRepository;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class AuthService {
 
 	private final PasswordEncoder encoder;
 	private final UserRepository ur;
 	private final VerificationTokenRepository vtr;
 	private final MailService ms;
-
-	@Autowired
-	public AuthService(PasswordEncoder encoder, UserRepository ur, VerificationTokenRepository vtr, MailService ms) {
-		this.encoder = encoder;
-		this.ur = ur;
-		this.vtr = vtr;
-		this.ms = ms;
-	}
+	private final AuthenticationManager am;
 
 	@Transactional
 	public void signup(RegisterRequest registerRequest) {
@@ -77,5 +74,9 @@ public class AuthService {
 		User user = o.orElseThrow(() -> new SpringRedditException("User not found: " + username));
 		user.setEnabled(true);
 		ur.save(user);
+	}
+
+	public void login(LoginRequest request) {
+		am.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 	}
 }
