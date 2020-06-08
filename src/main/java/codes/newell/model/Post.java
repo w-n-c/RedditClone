@@ -29,7 +29,7 @@ public class Post {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	private Long id;
+	private Long postId;
 
 	@NotBlank(message = "Post name cannot be empty or null")
 	private String postName;
