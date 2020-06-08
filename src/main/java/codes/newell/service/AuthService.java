@@ -1,6 +1,7 @@
 package codes.newell.service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import codes.newell.dto.RegisterRequest;
+import codes.newell.exceptions.SpringRedditException;
 import codes.newell.model.NotificationEmail;
 import codes.newell.model.User;
 import codes.newell.model.VerificationToken;
@@ -60,5 +62,20 @@ public class AuthService {
 		verifier.setUser(user);
 		vtr.save(verifier);
 		return token;
+	}
+
+	public void verifyAccount(String token) {
+		Optional<VerificationToken> o = vtr.findByToken(token);
+		VerificationToken vt = o.orElseThrow(() -> new SpringRedditException("Invalid Token"));
+		fetchUserAndEnable(vt);
+	}
+
+	@Transactional
+	private void fetchUserAndEnable(VerificationToken vt) {
+		String username = vt.getUser().getUsername();
+		Optional<User> o = ur.findByUsername(username);
+		User user = o.orElseThrow(() -> new SpringRedditException("User not found: " + username));
+		user.setEnabled(true);
+		ur.save(user);
 	}
 }

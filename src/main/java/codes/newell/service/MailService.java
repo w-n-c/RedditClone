@@ -5,6 +5,7 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import codes.newell.exceptions.SpringRedditException;
@@ -24,6 +25,7 @@ public class MailService {
 		this.builder = builder;
 	}
 	
+	@Async
 	public void sendMail(NotificationEmail email) {
 		MimeMessagePreparator preparator = message -> {
 			MimeMessageHelper helper = new MimeMessageHelper(message);
