@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import codes.newell.dto.LoginRequest;
 import codes.newell.dto.RegisterRequest;
 import codes.newell.service.AuthService;
 
@@ -34,5 +35,10 @@ public class AuthController {
 	public ResponseEntity<String> verifyAccount(@PathVariable String token) {
 		as.verifyAccount(token);
 		return new ResponseEntity<>("Account activated successfully", HttpStatus.OK);
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+		as.login(request);
 	}
 }
