@@ -12,17 +12,17 @@ import java.security.cert.CertificateException;
 import javax.annotation.PostConstruct;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import codes.newell.exceptions.SpringRedditException;
-import codes.newell.model.User;
 import io.jsonwebtoken.Jwts;
 
 @Service
 public class JwtProvider {
-	
+
 	private KeyStore keyStore;
-	
+
     @PostConstruct
     public void init() {
         try {
@@ -33,7 +33,7 @@ public class JwtProvider {
             throw new SpringRedditException("Exception occurred while loading keystore", e);
         }
     }
-	
+
 	public String generateToken(Authentication auth) {
 		User principal = (User)auth.getPrincipal();
 		return Jwts.builder()

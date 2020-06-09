@@ -8,9 +8,12 @@ import javax.transaction.Transactional;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import codes.newell.dto.AuthenticationResponse;
 import codes.newell.dto.LoginRequest;
 import codes.newell.dto.RegisterRequest;
 import codes.newell.exceptions.SpringRedditException;
@@ -19,6 +22,7 @@ import codes.newell.model.User;
 import codes.newell.model.VerificationToken;
 import codes.newell.repository.UserRepository;
 import codes.newell.repository.VerificationTokenRepository;
+import codes.newell.security.JwtProvider;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -30,6 +34,7 @@ public class AuthService {
 	private final VerificationTokenRepository vtr;
 	private final MailService ms;
 	private final AuthenticationManager am;
+	private final JwtProvider jp;
 
 	@Transactional
 	public void signup(RegisterRequest registerRequest) {
@@ -76,7 +81,10 @@ public class AuthService {
 		ur.save(user);
 	}
 
-	public void login(LoginRequest request) {
-		am.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+	public AuthenticationResponse login(LoginRequest request) {
+		Authentication auth = am.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+		SecurityContextHolder.getContext().setAuthentication(auth);
+		String token = jp.generateToken(auth);
+		return new AuthenticationResponse(token, request.getUsername());
 	}
 }

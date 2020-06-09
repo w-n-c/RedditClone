@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 @EnableWebSecurity //contains @configuration
 @AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-	
+
 	private final UserDetailsService uds;
 
 	@Bean(BeanIds.AUTHENTICATION_MANAGER)
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configureGlobal(AuthenticationManagerBuilder abm) throws Exception {
 		abm.userDetailsService(uds).passwordEncoder(passwordEncoder());
 	}
-	
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();

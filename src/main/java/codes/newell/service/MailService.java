@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class MailService {
-	
+
 	private final JavaMailSender sender;
 	private final MailContentBuilder builder;
 
@@ -24,7 +24,7 @@ public class MailService {
 		this.sender = sender;
 		this.builder = builder;
 	}
-	
+
 	@Async
 	public void sendMail(NotificationEmail email) {
 		MimeMessagePreparator preparator = message -> {
@@ -41,5 +41,4 @@ public class MailService {
 			throw new SpringRedditException("Exception occurred when sending mail to " + email.getRecipient(), e);
 		}
 	}
-
 }
