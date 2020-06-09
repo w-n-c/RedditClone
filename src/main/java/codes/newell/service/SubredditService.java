@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import codes.newell.dto.SubredditDto;
+import codes.newell.exceptions.SpringRedditException;
+import codes.newell.mapper.SubredditMapper;
 import codes.newell.model.Subreddit;
 import codes.newell.repository.SubredditRepository;
 import lombok.AllArgsConstructor;
@@ -19,10 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 public class SubredditService {
 	
 	private final SubredditRepository sr;
+	private final SubredditMapper sm;
 	
 	@Transactional
 	public SubredditDto save(SubredditDto dto) {
-		Subreddit subreddit = sr.save(mapSubredditDto(dto));
+		Subreddit subreddit = sr.save(sm.mapDtoToSubreddit(dto));
 		dto.setId(subreddit.getId());
 		return dto;
 	}
@@ -31,21 +34,13 @@ public class SubredditService {
 	public List<SubredditDto> getAll() {
 		return sr.findAll()
 			.stream()
-			.map(this::mapToDto)
+			.map(sm::mapSubredditToDto)
 			.collect(toList());
 	}
-	
-	private SubredditDto mapToDto(Subreddit s) {
-		return SubredditDto.builder()
-			.id(s.getId())
-			.numberOfPosts(s.getPosts().size())
-			.build();
-	}
 
-	private Subreddit mapSubredditDto(SubredditDto dto) {
-		return Subreddit.builder()
-			.name(dto.getName())
-			.description(dto.getDescription())
-			.build();
+	public SubredditDto getSubreddit(Long id) {
+		Subreddit s = sr.findById(id)
+				.orElseThrow(() -> new SpringRedditException("No subreddit found with ID " + id));
+		return sm.mapSubredditToDto(s);
 	}
 }
