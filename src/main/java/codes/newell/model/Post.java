@@ -29,7 +29,7 @@ public class Post {
 
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
-	private Long postId;
+	private Long id;
 
 	@NotBlank(message = "Post name cannot be empty or null")
 	private String postName;
@@ -44,11 +44,11 @@ public class Post {
 	private Integer voteCount;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "userId")
+	@JoinColumn(name = "userId", referencedColumnName="id")
 	private User user;
 
 	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "id")
+	@JoinColumn(name = "subredditId", referencedColumnName="id")
 	private Subreddit subreddit;
 
 	private Instant createdDate;

@@ -1,10 +1,13 @@
 package codes.newell.controller;
 
+import static org.springframework.http.ResponseEntity.status;
+
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,26 +28,26 @@ public class PostController {
 	@PostMapping
 	public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest) {
 		ps.save(postRequest);
-		return new ResponseEntity<Void>(HttpStatus.CREATED);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
 	@GetMapping("{id}")
-	public PostResponse getPost(Long id) {
-		return ps.getPost(id);
+	public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
+		return status(HttpStatus.OK).body(ps.getPost(id));
 	}
 
 	@GetMapping
-	public List<PostResponse> getAllPosts() {
-		return ps.getAllPosts();
+	public ResponseEntity<List<PostResponse>> getAllPosts() {
+		return status(HttpStatus.OK).body(ps.getAllPosts());
 	}
 	
 	@GetMapping("by-subreddit/{id}")
-	public List<PostResponse> getPostsBySubreddit(Long id) {
-		return ps.getPostsBySubreddit(id);
+	public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@PathVariable Long id) {
+		return status(HttpStatus.OK).body(ps.getPostsBySubreddit(id));
 	}
 	
 	@GetMapping("by-user/{name}")
-	public List<PostResponse> getPostsByUsername(String username) {
-		return ps.getPostsByUsername(username);
+	public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable String username) {
+		return status(HttpStatus.OK).body(ps.getPostsByUsername(username));
 	}
 }

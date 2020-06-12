@@ -43,4 +43,10 @@ public class SubredditService {
 				.orElseThrow(() -> new SpringRedditException("No subreddit found with ID " + id));
 		return sm.mapSubredditToDto(s);
 	}
+	
+	public SubredditDto getSubreddit(String name) {
+		Subreddit s = sr.findByName(name)
+				.orElseThrow(() -> new SpringRedditException("No subreddit found with name" + name));
+		return sm.mapSubredditToDto(s);
+	}
 }

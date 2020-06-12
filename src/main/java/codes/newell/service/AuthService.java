@@ -4,14 +4,14 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import codes.newell.dto.AuthenticationResponse;
 import codes.newell.dto.LoginRequest;
@@ -55,8 +55,15 @@ public class AuthService {
 			token
 		));
 	}
+	
+    @Transactional(readOnly = true)
+    public User getCurrentUser() {
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        return ur.findByUsername(principal.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
+    }
 
-	@Transactional
 	private String generateVerificationToken(User user) {
 		String token = UUID.randomUUID().toString();
 		VerificationToken verifier = new VerificationToken();
@@ -72,7 +79,6 @@ public class AuthService {
 		fetchUserAndEnable(vt);
 	}
 
-	@Transactional
 	private void fetchUserAndEnable(VerificationToken vt) {
 		String username = vt.getUser().getUsername();
 		Optional<User> o = ur.findByUsername(username);
