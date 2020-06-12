@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import codes.newell.dto.AuthenticationResponse;
 import codes.newell.dto.LoginRequest;
+import codes.newell.dto.RefreshTokenRequest;
 import codes.newell.dto.RegisterRequest;
 import codes.newell.exceptions.SpringRedditException;
 import codes.newell.model.NotificationEmail;
@@ -35,6 +36,7 @@ public class AuthService {
 	private final MailService ms;
 	private final AuthenticationManager am;
 	private final JwtProvider jp;
+	private final RefreshTokenService rts;
 
 	@Transactional
 	public void signup(RegisterRequest registerRequest) {
@@ -91,6 +93,22 @@ public class AuthService {
 		Authentication auth = am.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		String token = jp.generateToken(auth);
-		return new AuthenticationResponse(token, request.getUsername());
+		return AuthenticationResponse.builder()
+				.authenticationToken(token)
+				.refreshToken(rts.generateRefreshToken().getToken())
+				.expiresAt(Instant.now().plusMillis(jp.getExpiration()))
+				.username(request.getUsername())
+				.build();
+	}
+
+	public AuthenticationResponse refreshToken(RefreshTokenRequest request) {
+		rts.validateRefreshToken(request.getRefreshToken());
+		String token = jp.generateTokenWithUsername(request.getUsername());
+		return AuthenticationResponse.builder()
+				.authenticationToken(token)
+				.refreshToken(request.getRefreshToken())
+				.expiresAt(Instant.now().plusMillis(jp.getExpiration()))
+				.username(request.getUsername())
+				.build();
 	}
 }
