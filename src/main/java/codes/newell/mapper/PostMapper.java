@@ -17,11 +17,11 @@ public interface PostMapper {
 	@Mapping(target = "subreddit", source="subreddit") // not optional (possible bug in mapstruct)
 	@Mapping(target = "user", source="user") // not optional (possible bug in mapstruct)
 	Post map(PostRequest postRequest, Subreddit subreddit, User user);
-	
+
 
 	@Mapping(target = "subredditName", source = "subreddit.name")
 	@Mapping(target = "username", source = "user.username")
 	PostResponse mapToDto(Post post);
-	
-	
+
+
 }

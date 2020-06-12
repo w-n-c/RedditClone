@@ -24,7 +24,7 @@ public class Vote {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	
+
 	private VoteType voteType;
 
 	@NotNull

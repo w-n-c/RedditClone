@@ -1,7 +1,7 @@
 package codes.newell.exceptions;
 
 public class PostNotFoundException extends RuntimeException {
-	
+
 	public PostNotFoundException(String message, Exception cause) {
 		super(message, cause);
 	}

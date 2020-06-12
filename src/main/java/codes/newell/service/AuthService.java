@@ -47,22 +47,22 @@ public class AuthService {
 		ur.save(user);
 		String token = generateVerificationToken(user);
 		ms.sendMail(new NotificationEmail(
-			"Please Activate your Account", // subject
-			user.getEmail(), // recipient
-			"Thank you for signing up for Spring Reddit!" + // body
-			"Please click the link below to activate your account: \n" +
-			"http://localhost:8080/api/auth/accountVerification/" +
-			token
-		));
+				"Please Activate your Account", // subject
+				user.getEmail(), // recipient
+				"Thank you for signing up for Spring Reddit!" + // body
+				"Please click the link below to activate your account: \n" +
+				"http://localhost:8080/api/auth/accountVerification/" +
+				token
+				));
 	}
-	
-    @Transactional(readOnly = true)
-    public User getCurrentUser() {
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-        return ur.findByUsername(principal.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
-    }
+
+	@Transactional(readOnly = true)
+	public User getCurrentUser() {
+		org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
+				getContext().getAuthentication().getPrincipal();
+		return ur.findByUsername(principal.getUsername())
+				.orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getUsername()));
+	}
 
 	private String generateVerificationToken(User user) {
 		String token = UUID.randomUUID().toString();

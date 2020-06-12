@@ -20,25 +20,25 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-	
+
 	private final UserRepository ur;
 
 	@Override
 	@Transactional(readOnly = true)
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String username) {
 		Optional<User> o = ur.findByUsername(username);
 		User user = o.orElseThrow(() -> new UsernameNotFoundException("No user found with username" + username));
 		return new org.springframework.security.core.userdetails.User(
-			user.getUsername(),
-			user.getPassword(),
-			user.isEnabled(),
-			true,
-			true,
-			true,
-			getAuthorities("USER")
-		);
+				user.getUsername(),
+				user.getPassword(),
+				user.isEnabled(),
+				true,
+				true,
+				true,
+				getAuthorities("USER")
+				);
 	}
-	
+
 	private Collection<? extends GrantedAuthority> getAuthorities(String role) {
 		return singletonList(new SimpleGrantedAuthority(role));
 	}

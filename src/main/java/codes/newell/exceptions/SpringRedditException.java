@@ -1,7 +1,7 @@
 package codes.newell.exceptions;
 
 public class SpringRedditException extends RuntimeException {
-	
+
 	public SpringRedditException(String message, Exception cause) {
 		super(message, cause);
 	}

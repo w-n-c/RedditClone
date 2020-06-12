@@ -22,15 +22,15 @@ import lombok.AllArgsConstructor;
 @RequestMapping("/api/posts")
 @AllArgsConstructor
 public class PostController {
-	
+
 	private final PostService ps;
-	
+
 	@PostMapping
 	public ResponseEntity<Void> createPost(@RequestBody PostRequest postRequest) {
 		ps.save(postRequest);
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping("{id}")
 	public ResponseEntity<PostResponse> getPost(@PathVariable Long id) {
 		return status(HttpStatus.OK).body(ps.getPost(id));
@@ -40,12 +40,12 @@ public class PostController {
 	public ResponseEntity<List<PostResponse>> getAllPosts() {
 		return status(HttpStatus.OK).body(ps.getAllPosts());
 	}
-	
+
 	@GetMapping("by-subreddit/{id}")
 	public ResponseEntity<List<PostResponse>> getPostsBySubreddit(@PathVariable Long id) {
 		return status(HttpStatus.OK).body(ps.getPostsBySubreddit(id));
 	}
-	
+
 	@GetMapping("by-user/{name}")
 	public ResponseEntity<List<PostResponse>> getPostsByUsername(@PathVariable String username) {
 		return status(HttpStatus.OK).body(ps.getPostsByUsername(username));

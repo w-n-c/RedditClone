@@ -23,17 +23,17 @@ import lombok.extern.slf4j.Slf4j;
 public class SubredditController {
 
 	private final SubredditService ss;
-	
+
 	@PostMapping
 	public ResponseEntity<SubredditDto> createSubreddit(@RequestBody SubredditDto dto) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(ss.save(dto));
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<List<SubredditDto>> getAllSubreddits() {
 		return ResponseEntity.status(HttpStatus.OK).body(ss.getAll());
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<SubredditDto> getSubreddit(@PathVariable Long id) {
 		return ResponseEntity.status(HttpStatus.OK).body(ss.getSubreddit(id));

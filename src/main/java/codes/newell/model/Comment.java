@@ -26,18 +26,18 @@ public class Comment {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	
+
 	@NotEmpty
 	private String text;
-	
+
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "postId")
 	private Post post;
-	
+
 	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "userId")
 	private User user;
-	
+
 	private Instant createdDate;
 
 }

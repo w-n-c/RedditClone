@@ -19,10 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @Slf4j
 public class SubredditService {
-	
+
 	private final SubredditRepository sr;
 	private final SubredditMapper sm;
-	
+
 	@Transactional
 	public SubredditDto save(SubredditDto dto) {
 		Subreddit subreddit = sr.save(sm.mapDtoToSubreddit(dto));
@@ -33,9 +33,9 @@ public class SubredditService {
 	@Transactional(readOnly = true)
 	public List<SubredditDto> getAll() {
 		return sr.findAll()
-			.stream()
-			.map(sm::mapSubredditToDto)
-			.collect(toList());
+				.stream()
+				.map(sm::mapSubredditToDto)
+				.collect(toList());
 	}
 
 	public SubredditDto getSubreddit(Long id) {
@@ -43,7 +43,7 @@ public class SubredditService {
 				.orElseThrow(() -> new SpringRedditException("No subreddit found with ID " + id));
 		return sm.mapSubredditToDto(s);
 	}
-	
+
 	public SubredditDto getSubreddit(String name) {
 		Subreddit s = sr.findByName(name)
 				.orElseThrow(() -> new SpringRedditException("No subreddit found with name" + name));

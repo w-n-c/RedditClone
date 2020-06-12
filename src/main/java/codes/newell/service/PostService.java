@@ -24,55 +24,55 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class PostService {
-	
+
 	private final PostRepository pr;
 	private final SubredditRepository sr;
 	private final AuthService as;
 	private final PostMapper pm;
 	private final UserRepository ur;
-	
+
 	@Transactional
 	public Post save(PostRequest postRequest) {
 		Subreddit subreddit = sr.findByName(postRequest.getSubredditName())
-			.orElseThrow(() -> new SubredditNotFoundException(postRequest.getSubredditName()));
+				.orElseThrow(() -> new SubredditNotFoundException(postRequest.getSubredditName()));
 		User user = as.getCurrentUser();
 		return pr.save(pm.map(postRequest, subreddit, user));
 	}
-	
+
 	@Transactional(readOnly = true)
 	public PostResponse getPost(Long id) {
-        Post post = pr.findById(id)
-        	.orElseThrow(() -> new PostNotFoundException(id.toString()));
-        return pm.mapToDto(post);
+		Post post = pr.findById(id)
+				.orElseThrow(() -> new PostNotFoundException(id.toString()));
+		return pm.mapToDto(post);
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<PostResponse> getAllPosts() {
 		return pr.findAll()
-			.stream()
-			.map(pm::mapToDto)
-			.collect(toList());
+				.stream()
+				.map(pm::mapToDto)
+				.collect(toList());
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<PostResponse> getPostsBySubreddit(Long id) {
-        Subreddit subreddit = sr.findById(id)
-        	.orElseThrow(() -> new SubredditNotFoundException(id.toString()));
-        List<Post> posts = pr.findAllBySubreddit(subreddit);
-        return posts
-        	.stream()
-        	.map(pm::mapToDto)
-        	.collect(toList());
+		Subreddit subreddit = sr.findById(id)
+				.orElseThrow(() -> new SubredditNotFoundException(id.toString()));
+		List<Post> posts = pr.findAllBySubreddit(subreddit);
+		return posts
+				.stream()
+				.map(pm::mapToDto)
+				.collect(toList());
 	}
-	
+
 	@Transactional(readOnly = true)
 	public List<PostResponse> getPostsByUsername(String username) {
-        User user = ur.findByUsername(username)
-        	.orElseThrow(() -> new UsernameNotFoundException(username));
-        return pr.findByUser(user)
-        	.stream()
-        	.map(pm::mapToDto)
-        	.collect(toList());
+		User user = ur.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException(username));
+		return pr.findByUser(user)
+				.stream()
+				.map(pm::mapToDto)
+				.collect(toList());
 	}
 
 }

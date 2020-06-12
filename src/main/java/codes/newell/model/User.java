@@ -25,19 +25,19 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = IDENTITY)
 	private Long id;
-	
+
 	@NotBlank(message = "Username is required")
 	private String username;
-	
+
 	@NotBlank(message = "Password is required")
 	private String password;
-	
+
 	@Email
 	@NotEmpty(message = "Email is required")
 	private String email;
 
 	private Instant created;
-	
+
 	private boolean enabled;
 
 }
