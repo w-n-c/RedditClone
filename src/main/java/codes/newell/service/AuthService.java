@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -110,5 +111,10 @@ public class AuthService {
 				.expiresAt(Instant.now().plusMillis(jp.getExpiration()))
 				.username(request.getUsername())
 				.build();
+	}
+
+	public boolean isLoggedIn() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return !(auth instanceof AnonymousAuthenticationToken) && auth.isAuthenticated();
 	}
 }
